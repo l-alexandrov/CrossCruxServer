@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_crosscruxserver" default="compile.module.crosscruxserver">
+  <dirname property="module.crosscruxserver.basedir" file="${ant.file.module_crosscruxserver}"/>
+  
+  <property name="module.jdk.home.crosscruxserver" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.crosscruxserver" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.crosscruxserver" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.crosscruxserver" value="-encoding UTF-8 -source 13 -target 13 ${compiler.args}"/>
+  
+  <property name="crosscruxserver.output.dir" value="${module.crosscruxserver.basedir}/out/production/CrossCruxServer"/>
+  <property name="crosscruxserver.testoutput.dir" value="${module.crosscruxserver.basedir}/out/test/CrossCruxServer"/>
+  
+  <path id="crosscruxserver.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="crosscruxserver.module.production.classpath">
+    <path refid="${module.jdk.classpath.crosscruxserver}"/>
+  </path>
+  
+  <path id="crosscruxserver.runtime.production.module.classpath">
+    <pathelement location="${crosscruxserver.output.dir}"/>
+  </path>
+  
+  <path id="crosscruxserver.module.classpath">
+    <path refid="${module.jdk.classpath.crosscruxserver}"/>
+    <pathelement location="${crosscruxserver.output.dir}"/>
+  </path>
+  
+  <path id="crosscruxserver.runtime.module.classpath">
+    <pathelement location="${crosscruxserver.testoutput.dir}"/>
+    <pathelement location="${crosscruxserver.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.crosscruxserver">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.crosscruxserver">
+    <patternset refid="excluded.from.module.crosscruxserver"/>
+  </patternset>
+  
+  <path id="crosscruxserver.module.sourcepath">
+    <dirset dir="${module.crosscruxserver.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.crosscruxserver" depends="compile.module.crosscruxserver.production,compile.module.crosscruxserver.tests" description="Compile module CrossCruxServer"/>
+  
+  <target name="compile.module.crosscruxserver.production" depends="register.custom.compilers" description="Compile module CrossCruxServer; production classes">
+    <mkdir dir="${crosscruxserver.output.dir}"/>
+    <javac2 destdir="${crosscruxserver.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.crosscruxserver}/javac">
+      <compilerarg line="${compiler.args.crosscruxserver}"/>
+      <bootclasspath refid="crosscruxserver.module.bootclasspath"/>
+      <classpath refid="crosscruxserver.module.production.classpath"/>
+      <src refid="crosscruxserver.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.crosscruxserver"/>
+    </javac2>
+    
+    <copy todir="${crosscruxserver.output.dir}">
+      <fileset dir="${module.crosscruxserver.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.crosscruxserver.tests" depends="register.custom.compilers,compile.module.crosscruxserver.production" description="compile module CrossCruxServer; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.crosscruxserver" description="cleanup module">
+    <delete dir="${crosscruxserver.output.dir}"/>
+    <delete dir="${crosscruxserver.testoutput.dir}"/>
+  </target>
+</project>
